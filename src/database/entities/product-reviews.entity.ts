@@ -13,6 +13,6 @@ export class ProductReview {
   @ManyToOne(() => User, { nullable: false })
   user: User;
 
-  @Column({ type: 'tinyint', width: 1, name: 'rating' })
+  @Column({ type: 'int', width: 1, name: 'rating' })
   rating: number;
 }

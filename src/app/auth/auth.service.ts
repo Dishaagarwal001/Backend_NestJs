@@ -12,7 +12,7 @@ import { RefreshToken } from 'src/database/entities/refresh-token.entity';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { User } from 'src/database/entities/user.entity';
-import { EmailService } from '../email/email.service';
+// import { EmailService } from '../email/email.service';
 import { randomInt } from 'crypto';
 
 @Injectable()
@@ -21,7 +21,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
-    private readonly mailerService: EmailService,
+    // private readonly mailerService: EmailService,
 
     @InjectRepository(RefreshToken)
     private readonly refreshTokenRepository: Repository<RefreshToken>,
@@ -120,10 +120,10 @@ export class AuthService {
     const activationUrl = `${clientUrl}/activate/${activationToken}`;
 
     // Send activation email
-    await this.mailerService.sendRegistrationUrl({
-      to: email,
-      context: { name, activationUrl },
-    });
+    // await this.mailerService.sendRegistrationUrl({
+    //   to: email,
+    //   context: { name, activationUrl },
+    // });
   }
 
   async forgotPassword(email: string): Promise<void> {
@@ -141,11 +141,11 @@ export class AuthService {
     user.resetOtpExpire = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
     await this.userRepository.save(user);
 
-    // Send OTP via email
-    await this.mailerService.sendResetPasswordOtp({
-      to: email,
-      context: { name: user.firstName, otp },
-    });
+    // // Send OTP via email
+    // await this.mailerService.sendResetPasswordOtp({
+    //   to: email,
+    //   context: { name: user.firstName, otp },
+    // });
   }
 
   async confirmOtp(email: string, otp: string): Promise<string> {

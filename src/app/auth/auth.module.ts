@@ -6,7 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RefreshToken } from 'src/database/entities/refresh-token.entity';
 import { AuthController } from './auth.controller';
-import { EmailModule } from '../email/email.module';
+// import { EmailModule } from '../email/email.module';
 import { User } from 'src/database/entities/user.entity';
 
 @Module({
@@ -22,7 +22,7 @@ import { User } from 'src/database/entities/user.entity';
         signOptions: { expiresIn: '3h' },
       }),
     }),
-    EmailModule,
+    // EmailModule,
   ],
   controllers: [AuthController],
   providers: [AuthService],

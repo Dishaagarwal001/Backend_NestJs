@@ -4,7 +4,6 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { ErrorsFilter } from 'src/core/filters/exception.filter';
 import { SuccessResponseInterceptor } from 'src/core/interceptor/success-response.interceptor';
-import { EmailModule } from './email/email.module';
 import { BrandModule } from './brand/brand.module';
 import { CategoryModule } from './categories/category.module';
 import { MaterialModule } from './material/material.module';
@@ -13,7 +12,6 @@ import { MaterialModule } from './material/material.module';
   imports: [
     AuthModule,
     UserModule,
-    EmailModule,
     BrandModule,
     CategoryModule,
     MaterialModule,
