@@ -6,11 +6,11 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { errorMessages } from 'src/core/utils/errors';
 import { UserRelation } from 'src/core/interfaces/user';
 import { User } from 'src/database/entities/user.entity';
+import { CreateUserDto } from 'src/core/dtos/user.dto';
 
 @Injectable()
 export class UserService {
@@ -35,18 +35,18 @@ export class UserService {
     const user = this.userRepository.create({
       ...createUserDto,
       dob: _dob,
-      password: hashedPassword,
+      passwordHash: hashedPassword,
     });
     return this.userRepository.save(user);
   }
 
-  async validateUser(username: string, password: string): Promise<User | null> {
-    const user = await this.userRepository.findOne({ where: { username } });
+  async validateUser(userName: string, password: string): Promise<User | null> {
+    const user = await this.userRepository.findOne({ where: { userName } });
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }

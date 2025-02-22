@@ -47,10 +47,10 @@ export class AdminSeeder implements SeederInterface {
     const hashedPassword = await hash(password, 10);
     const adminRoles = await this.rolesRepository.find();
     return {
-      name: 'Admin', // Add default name
-      username: 'admin', // Add default username
+      firstName: 'Admin', // Add default name
+      userName: 'admin', // Add default username
       email: this.config.get<string>('ADMIN_EMAIL'),
-      password: hashedPassword,
+      passwordHash: hashedPassword,
       roles: adminRoles,
     };
   }

@@ -8,9 +8,9 @@ import {
   Request,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { Auth } from 'src/core/decorators/auth.decorator';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { CreateUserDto } from 'src/core/dtos/user.dto';
 
 @UsePipes(
   new ValidationPipe({

@@ -46,7 +46,7 @@ export class AuthService {
       expiresAt,
       user,
       device,
-      ip,
+      ipAddress:ip,
     });
 
     await this.refreshTokenRepository.save(refreshToken);
@@ -67,7 +67,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid or expired refresh token');
     }
 
-    if (refreshToken.ip !== ip) {
+    if (refreshToken.ipAddress !== ip) {
       throw new UnauthorizedException('IP mismatch');
     }
 
@@ -138,25 +138,25 @@ export class AuthService {
 
     // Save OTP to user entity (with expiration time)
     user.resetOtp = otp;
-    user.resetOtpExpiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
+    user.resetOtpExpire = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
     await this.userRepository.save(user);
 
     // Send OTP via email
     await this.mailerService.sendResetPasswordOtp({
       to: email,
-      context: { name: user.name, otp },
+      context: { name: user.firstName, otp },
     });
   }
 
   async confirmOtp(email: string, otp: string): Promise<string> {
     const user = await this.userRepository.findOne({ where: { email } });
 
-    if (!user || user.resetOtp !== otp || user.resetOtpExpiresAt < new Date()) {
+    if (!user || user.resetOtp !== otp || user.resetOtpExpire < new Date()) {
       throw new HttpException('Invalid OTP or expired', HttpStatus.BAD_REQUEST);
     }
 
     user.resetOtp = null;
-    user.resetOtpExpiresAt = null;
+    user.resetOtpExpire = null;
     await this.userRepository.save(user);
 
     const resetToken = this.jwtService.sign(
@@ -189,7 +189,7 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(newPassword, 12);
 
     // Update the user's password
-    user.password = hashedPassword;
+    user.passwordHash = hashedPassword;
     await this.userRepository.save(user);
   }
 }
