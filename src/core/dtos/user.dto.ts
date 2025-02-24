@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, Length, Matches } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Length,
+  Matches,
+} from 'class-validator';
 import { Expose } from 'class-transformer';
 
 enum Gender {
@@ -9,19 +17,34 @@ enum Gender {
 }
 
 export class CreateUserDto {
-  @ApiProperty({ example: 'John', description: 'First name of the user', minLength: 2, maxLength: 30 })
+  @ApiProperty({
+    example: 'John',
+    description: 'First name of the user',
+    minLength: 2,
+    maxLength: 30,
+  })
   @IsString()
   @IsNotEmpty()
   @Length(2, 30)
   firstName: string;
 
-  @ApiProperty({ example: 'Doe', description: 'Last name of the user', minLength: 2, maxLength: 30 })
+  @ApiProperty({
+    example: 'Doe',
+    description: 'Last name of the user',
+    minLength: 2,
+    maxLength: 30,
+  })
   @IsString()
   @IsNotEmpty()
   @Length(2, 30)
   lastName: string;
 
-  @ApiProperty({ example: 'johndoe', description: 'Unique username', minLength: 3, maxLength: 15 })
+  @ApiProperty({
+    example: 'johndoe',
+    description: 'Unique username',
+    minLength: 3,
+    maxLength: 15,
+  })
   @IsString()
   @IsNotEmpty()
   @Length(3, 15)
@@ -32,7 +55,11 @@ export class CreateUserDto {
   @IsNotEmpty()
   email: string;
 
-  @ApiProperty({ example: '2000-05-15', description: 'Date of birth', required: false })
+  @ApiProperty({
+    example: '2000-05-15',
+    description: 'Date of birth',
+    required: false,
+  })
   @IsOptional()
   dob?: Date;
 
@@ -40,54 +67,96 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   @Matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
-    message: 'Password must be at least 8 characters long, contain at least one letter, one number, and one special character',
+    message:
+      'Password must be at least 8 characters long, contain at least one letter, one number, and one special character',
   })
   password: string;
 
-  @ApiProperty({ example: 'm', description: 'Gender', enum: Gender, default: Gender.Unspecified })
+  @ApiProperty({
+    example: 'm',
+    description: 'Gender',
+    enum: Gender,
+    default: Gender.Unspecified,
+  })
   @IsEnum(Gender)
   @IsOptional()
   gender: Gender;
 
-  @ApiProperty({ example: true, description: 'Indicates if the user is active', default: true })
+  @ApiProperty({
+    example: true,
+    description: 'Indicates if the user is active',
+    default: true,
+  })
   @IsOptional()
   isActive?: boolean;
 }
 
 export class UpdateUserDto {
-  @ApiProperty({ example: 'John', description: 'Updated first name', minLength: 2, maxLength: 30, required: false })
+  @ApiProperty({
+    example: 'John',
+    description: 'Updated first name',
+    minLength: 2,
+    maxLength: 30,
+    required: false,
+  })
   @IsString()
   @Length(2, 30)
   @IsOptional()
   firstName?: string;
 
-  @ApiProperty({ example: 'Doe', description: 'Updated last name', minLength: 2, maxLength: 30, required: false })
+  @ApiProperty({
+    example: 'Doe',
+    description: 'Updated last name',
+    minLength: 2,
+    maxLength: 30,
+    required: false,
+  })
   @IsString()
   @Length(2, 30)
   @IsOptional()
   lastName?: string;
 
-  @ApiProperty({ example: 'john.doe@example.com', description: 'Updated email', required: false })
+  @ApiProperty({
+    example: 'john.doe@example.com',
+    description: 'Updated email',
+    required: false,
+  })
   @IsEmail()
   @IsOptional()
   email?: string;
 
-  @ApiProperty({ example: 'f', description: 'Updated gender', enum: Gender, required: false })
+  @ApiProperty({
+    example: 'f',
+    description: 'Updated gender',
+    enum: Gender,
+    required: false,
+  })
   @IsEnum(Gender)
   @IsOptional()
   gender?: Gender;
 
-  @ApiProperty({ example: false, description: 'Indicates if the user is deleted', required: false })
+  @ApiProperty({
+    example: false,
+    description: 'Indicates if the user is deleted',
+    required: false,
+  })
   @IsOptional()
   isDeleted?: boolean;
 
-  @ApiProperty({ example: true, description: 'Indicates if the user is active', required: false })
+  @ApiProperty({
+    example: true,
+    description: 'Indicates if the user is active',
+    required: false,
+  })
   @IsOptional()
   isActive?: boolean;
 }
 
 export class UserResponseDto {
-  @ApiProperty({ example: 'd6e5a16a-0f74-4c92-a3fd-2c4f83e6f3ab', description: 'Unique ID of the user' })
+  @ApiProperty({
+    example: 'd6e5a16a-0f74-4c92-a3fd-2c4f83e6f3ab',
+    description: 'Unique ID of the user',
+  })
   @Expose()
   id: string;
 
@@ -103,11 +172,18 @@ export class UserResponseDto {
   @Expose()
   userName: string;
 
-  @ApiProperty({ example: 'john.doe@example.com', description: 'Email of the user' })
+  @ApiProperty({
+    example: 'john.doe@example.com',
+    description: 'Email of the user',
+  })
   @Expose()
   email: string;
 
-  @ApiProperty({ example: '2000-05-15', description: 'Date of birth of the user', required: false })
+  @ApiProperty({
+    example: '2000-05-15',
+    description: 'Date of birth of the user',
+    required: false,
+  })
   @Expose()
   dob?: Date;
 
@@ -115,19 +191,31 @@ export class UserResponseDto {
   @Expose()
   gender: Gender;
 
-  @ApiProperty({ example: true, description: 'Indicates if the user is active' })
+  @ApiProperty({
+    example: true,
+    description: 'Indicates if the user is active',
+  })
   @Expose()
   isActive: boolean;
 
-  @ApiProperty({ example: false, description: 'Indicates if the user is deleted' })
+  @ApiProperty({
+    example: false,
+    description: 'Indicates if the user is deleted',
+  })
   @Expose()
   isDeleted: boolean;
 
-  @ApiProperty({ example: '2025-02-18T12:00:00.000Z', description: 'User creation timestamp' })
+  @ApiProperty({
+    example: '2025-02-18T12:00:00.000Z',
+    description: 'User creation timestamp',
+  })
   @Expose()
   createdAt: Date;
 
-  @ApiProperty({ example: '2025-02-18T12:30:00.000Z', description: 'Last update timestamp' })
+  @ApiProperty({
+    example: '2025-02-18T12:30:00.000Z',
+    description: 'Last update timestamp',
+  })
   @Expose()
   updatedAt: Date;
 }

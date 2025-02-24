@@ -14,6 +14,7 @@ import * as bcrypt from 'bcrypt';
 import { User } from 'src/database/entities/user.entity';
 // import { EmailService } from '../email/email.service';
 import { randomInt } from 'crypto';
+import { CreateUserDto } from 'src/core/dtos/user.dto';
 
 @Injectable()
 export class AuthService {
@@ -46,7 +47,7 @@ export class AuthService {
       expiresAt,
       user,
       device,
-      ipAddress:ip,
+      ipAddress: ip,
     });
 
     await this.refreshTokenRepository.save(refreshToken);
@@ -91,10 +92,9 @@ export class AuthService {
     await this.refreshTokenRepository.delete({ id: token.id });
   }
 
-  async register(name: string, email: string, password: string) {
-    // Check if email already exists
+  async register(user: CreateUserDto) {
     const existingUser = await this.userRepository.findOne({
-      where: { email },
+      where: { email: user.email },
     });
     if (existingUser) {
       throw new HttpException(
@@ -104,10 +104,16 @@ export class AuthService {
     }
 
     // Hash the password
-    const passwordHash = await bcrypt.hash(password, 12);
+    const passwordHash = await bcrypt.hash(user.password, 12);
 
     // Create user data for activation token
-    const newUser = { name, email, password: passwordHash };
+    const newUser = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      passwordHash: passwordHash,
+      dob: user.dob,
+    };
 
     // Generate activation token
     const activationToken = this.jwtService.sign(newUser, {
@@ -117,6 +123,7 @@ export class AuthService {
 
     // Generate activation URL
     const clientUrl = this.config.get<string>('CLIENT_URL');
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const activationUrl = `${clientUrl}/activate/${activationToken}`;
 
     // Send activation email

@@ -18,16 +18,14 @@ export class Role {
   @Column({ type: 'varchar', length: 120, unique: true, name: 'name' })
   name: string;
 
-  // Many-to-Many relationship with Permission
   @ManyToMany(() => Permission, (permission) => permission.roles)
   @JoinTable({
-    name: 'role_permissions', // Name of the join table
-    joinColumn: { name: 'role_id', referencedColumnName: 'id' }, // Role side of the join
-    inverseJoinColumn: { name: 'permission_id', referencedColumnName: 'id' }, // Permission side of the join
+    name: 'role_permissions',
+    joinColumn: { name: 'role_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'permission_id', referencedColumnName: 'id' },
   })
   permissions: Permission[];
 
-  // Many-to-Many relationship with User
   @ManyToMany(() => User, (user) => user.roles)
   users: User[];
 
