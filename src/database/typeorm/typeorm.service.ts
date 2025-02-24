@@ -12,7 +12,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       ssl: {
         rejectUnauthorized: false, // Adjust based on your environment
       },
-      synchronize: true, // Never use true in production // use true initially and then seed
+      synchronize: false, // Never use true in production // use true initially and then seed
       logging: true, // Enable only in development
       type: 'postgres',
       url: 'postgresql://postgres_dev_env_user:dwVI9zwhcjtvuvaogQ0PKVXQlpJNnoD5@dpg-cuu9ct9opnds739utla0-a.oregon-postgres.render.com/postgres_dev_env',
