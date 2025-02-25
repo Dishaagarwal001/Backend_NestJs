@@ -15,9 +15,12 @@ export class SuccessResponseInterceptor implements NestInterceptor {
     const customMessage =
       this.reflector.get<string>('message', context.getHandler()) || 'success';
 
+    const statusCode = context.switchToHttp().getResponse().statusCode || 200;
+
     return next.handle().pipe(
       map((data) => ({
         isSuccess: true,
+        statusCode,
         message: customMessage,
         data,
         errorCode: null,

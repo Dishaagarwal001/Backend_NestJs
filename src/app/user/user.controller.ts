@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Auth } from 'src/core/decorators/auth.decorator';
-import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from 'src/core/dtos/user.dto';
 
 @UsePipes(
@@ -27,7 +27,8 @@ export class UserController {
 
   @Auth()
   @Post('create-user')
-  @ApiBearerAuth()
+  @ApiTags('protected')
+  @ApiBearerAuth('access-token')
   async createUser(@Body() createUserDto: CreateUserDto) {
     return this.userService.createUser(createUserDto);
   }

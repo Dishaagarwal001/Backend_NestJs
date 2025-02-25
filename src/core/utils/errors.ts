@@ -1,62 +1,74 @@
 export interface ErrorBody extends Error {
   code: string;
+  statusCode: number;
 }
 
 export const errorMessages = {
   auth: {
-    wronCredentials: {
-      message: 'wrong data provided',
+    wrongCredentials: {
+      message: 'Wrong credentials provided',
       code: '60001',
+      statusCode: 401, // Unauthorized
     },
     userAlreadyExist: {
-      message: 'user already exist',
+      message: 'User already exists',
       code: '60002',
+      statusCode: 409, // Conflict
     },
     expiredToken: {
-      message: 'token expired',
+      message: 'Token expired',
       code: '60003',
+      statusCode: 401, // Unauthorized
     },
-    invlidToken: {
-      message: 'invlid token',
+    invalidToken: {
+      message: 'Invalid token',
       code: '60004',
+      statusCode: 401, // Unauthorized
     },
     notAllowed: {
-      message: 'not allowed',
+      message: 'Not allowed',
       code: '60005',
+      statusCode: 403, // Forbidden
     },
   },
   user: {
     notFound: {
-      message: 'user not found',
+      message: 'User not found',
       code: '60101',
+      statusCode: 404, // Not Found
     },
   },
   role: {
     notFound: {
-      message: 'role not found',
+      message: 'Role not found',
       code: '60201',
+      statusCode: 404, // Not Found
     },
   },
   category: {
     notFound: {
-      message: 'category not found',
+      message: 'Category not found',
       code: '60301',
+      statusCode: 404, // Not Found
     },
   },
   product: {
     notFound: {
-      message: 'product not found',
+      message: 'Product not found',
       code: '60401',
+      statusCode: 404, // Not Found
     },
     notFulfilled: {
-      message: 'not all product info is fulfilled',
+      message: 'Not all product info is fulfilled',
       code: '60402',
+      statusCode: 400, // Bad Request
     },
   },
   global: {
     internalError: {
-      message: 'something went wrong',
+      message: 'Something went wrong',
       code: '70000',
+      statusCode: 500, // Internal Server Error
     },
   },
 };

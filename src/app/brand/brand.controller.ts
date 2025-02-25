@@ -21,6 +21,7 @@ import {
   ApiParam,
   ApiBody,
 } from '@nestjs/swagger';
+import { SetMessage } from 'src/core/decorators/set-message.decorator';
 
 @ApiTags('Brands')
 @Controller('brands')
@@ -90,6 +91,7 @@ export class BrandController {
   }
 
   @Delete(':id')
+  @SetMessage('Brand deleted successfully')
   @ApiOperation({ summary: 'Delete a brand by ID' })
   @ApiParam({
     name: 'id',
@@ -98,10 +100,7 @@ export class BrandController {
   })
   @ApiResponse({ status: 200, description: 'Brand deleted successfully' })
   @ApiResponse({ status: 404, description: 'Brand not found' })
-  async remove(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<{ message: string }> {
+  async remove(@Param('id', ParseIntPipe) id: number) {
     await this.brandService.remove(id);
-    return { message: `Brand with ID ${id} deleted successfully` };
   }
 }
