@@ -4,7 +4,9 @@ import { MailerService } from '@nestjs-modules/mailer';
 
 @Processor('email')
 export class EmailProcessor {
-  constructor(private readonly mailerService: MailerService) {}
+  constructor(private readonly mailerService: MailerService) {
+    console.log('✅ Email Processor Initialized');
+  }
 
   @Process('sendEmail')
   async handleSendEmail(job: Job): Promise<void> {

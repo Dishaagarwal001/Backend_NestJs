@@ -33,15 +33,21 @@ export class EmailService {
   }
 
   async sendRegistrationUrl(emailData: SendRegistrationUrlDto): Promise<void> {
-    console.log('📩 Email Data before sending:', emailData);
-    console.log('📌 Context:', emailData.context); // Debug context data
+    // console.log('📩 Email Data before sending:', emailData);
+    // console.log('📌 Context:', emailData.context); // Debug context data
 
-    await this.mailerService.sendMail({
+    await this.emailQueue.add('sendEmail', {
       to: emailData.to,
       subject: 'Account Activation',
       template: './otp', // Ensure path is correct
       context: emailData.context,
     });
+    // await this.mailerService.sendMail({
+    //   to: emailData.to,
+    //   subject: 'Account Activation',
+    //   template: './otp', // Ensure path is correct
+    //   context: emailData.context,
+    // });
   }
 
   async sendResetPasswordOtp(
