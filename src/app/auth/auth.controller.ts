@@ -18,6 +18,7 @@ import { UserService } from '../user/user.service';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { CreateUserDto } from 'src/core/dtos/user.dto';
 
 @ApiTags('Auth')
 @UsePipes(
@@ -143,10 +144,8 @@ export class AuthController {
   @Post('register')
   @HttpCode(200)
   @SetMessage('Email activation link has been sent to your email')
-  async register(
-    @Body() body: { name: string; email: string; password: string },
-  ) {
-    await this.authService.register(body.name, body.email, body.password);
+  async register(@Body() user: CreateUserDto) {
+    await this.authService.register(user);
   }
 
   // Forgot Password
