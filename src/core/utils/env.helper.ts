@@ -16,7 +16,6 @@ export function getEnvPath(dest: string): string {
 export function determineEnvFilePath(): string {
   const envPath = process.env.ENV_PATH; // Custom path for .env file ( for aws ec2 deployment case)
   if (envPath) {
-    console.log(`Using custom environment file path: ${envPath}`);
     return envPath;
   }
 

@@ -14,7 +14,6 @@ import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
-        console.log('📧 Mailer Config Loaded'); // Debugging
         return {
           transport: {
             service: 'Gmail',
@@ -61,7 +60,6 @@ import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
         const redisUrl = configService.get<string>('REDIS_URL');
-        console.log('📩 Email Queue Redis URL:', redisUrl); // Debugging
 
         return {
           connection: {

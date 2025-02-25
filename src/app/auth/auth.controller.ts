@@ -74,7 +74,6 @@ export class AuthController {
     if (!user) {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
     }
-    console.log(user, 'user');
 
     const device = req.headers['user-agent'] || 'Unknown Device';
     const ip = req.ip || req.connection.remoteAddress;
