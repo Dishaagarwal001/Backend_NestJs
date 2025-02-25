@@ -7,12 +7,14 @@ import { SuccessResponseInterceptor } from 'src/core/interceptor/success-respons
 import { BrandModule } from './brand/brand.module';
 import { CategoryModule } from './categories/category.module';
 import { MaterialModule } from './material/material.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
     AuthModule,
     UserModule,
     BrandModule,
+    EmailModule,
     CategoryModule,
     MaterialModule,
   ],

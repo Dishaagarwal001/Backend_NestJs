@@ -21,10 +21,10 @@ export function createDocument(app: INestApplication): OpenAPIObject {
       {
         type: 'http',
         scheme: 'bearer',
-        bearerFormat: 'JWT', // Specifies the token format
+        bearerFormat: 'JWT', // Specifies JWT format
         description: 'Enter JWT token here', // Optional description for clarity
       },
-      'authorization', // Security name for Swagger UI
+      'access-token', // ✅ Security name used in controllers
     );
 
   // Add tags for better API grouping in Swagger UI

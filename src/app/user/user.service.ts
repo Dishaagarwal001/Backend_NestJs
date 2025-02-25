@@ -41,10 +41,13 @@ export class UserService {
   }
 
   async validateUser(userName: string, password: string): Promise<User | null> {
-    const user = await this.userRepository.findOne({ where: { userName } });
+    const user = await this.userRepository.findOne({
+      where: { email: userName },
+    });
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
+    console.log(user, 'user');
 
     const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
     if (!isPasswordValid) {

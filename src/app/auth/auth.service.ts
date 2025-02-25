@@ -15,6 +15,7 @@ import { User } from 'src/database/entities/user.entity';
 // import { EmailService } from '../email/email.service';
 import { randomInt } from 'crypto';
 import { CreateUserDto } from 'src/core/dtos/user.dto';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +23,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
-    // private readonly mailerService: EmailService,
+    private readonly mailerService: EmailService,
 
     @InjectRepository(RefreshToken)
     private readonly refreshTokenRepository: Repository<RefreshToken>,
@@ -126,11 +127,12 @@ export class AuthService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const activationUrl = `${clientUrl}/activate/${activationToken}`;
 
+    console.log(activationUrl, 'activationtoken');
     // Send activation email
-    // await this.mailerService.sendRegistrationUrl({
-    //   to: email,
-    //   context: { name, activationUrl },
-    // });
+    await this.mailerService.sendRegistrationUrl({
+      to: user.email,
+      context: { name: user.firstName, activationUrl },
+    });
   }
 
   async forgotPassword(email: string): Promise<void> {
@@ -148,11 +150,11 @@ export class AuthService {
     user.resetOtpExpire = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
     await this.userRepository.save(user);
 
-    // // Send OTP via email
-    // await this.mailerService.sendResetPasswordOtp({
-    //   to: email,
-    //   context: { name: user.firstName, otp },
-    // });
+    // Send OTP via email
+    await this.mailerService.sendResetPasswordOtp({
+      to: email,
+      context: { name: user.firstName, otp },
+    });
   }
 
   async confirmOtp(email: string, otp: string): Promise<string> {
