@@ -25,8 +25,8 @@ import {
 import { plainToInstance } from 'class-transformer';
 import { PaginatedRequestDto } from 'src/core/dtos/pagination.dto';
 
-@ApiTags('Materials')
-@Controller('materials')
+@ApiTags('Material')
+@Controller('material')
 export class MaterialController {
   constructor(private readonly materialService: MaterialService) {}
 
@@ -45,7 +45,7 @@ export class MaterialController {
     return this.materialService.create(createMaterialDto);
   }
 
-  @Get()
+  @Post('materialListByPage')
   @ApiOperation({ summary: 'Get all materials' })
   @ApiResponse({
     status: 200,

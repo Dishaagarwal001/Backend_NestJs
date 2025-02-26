@@ -25,8 +25,8 @@ import {
 } from '@nestjs/swagger';
 import { PaginatedRequestDto } from 'src/core/dtos/pagination.dto';
 
-@ApiTags('Categories')
-@Controller('categories')
+@ApiTags('Category')
+@Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
@@ -46,7 +46,7 @@ export class CategoryController {
     });
   }
 
-  @Get()
+  @Post('categoryListByPage')
   @ApiOperation({ summary: 'Get all categories' })
   @ApiResponse({
     status: 200,
