@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from 'src/database/entities/category.entity';
@@ -10,7 +14,6 @@ import {
 } from 'src/core/dtos/category.dto';
 import { BaseService } from '../base.service';
 import { PaginatedRequestDto } from 'src/core/dtos/pagination.dto';
-// import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class CategoryService extends BaseService<
@@ -25,9 +28,15 @@ export class CategoryService extends BaseService<
   }
 
   async create(dto: CreateCategoryDto): Promise<Category> {
+    const existingByName = await this.categoryRepository.findOne({
+      where: { categoryName: dto.categoryName },
+    });
+    if (existingByName) {
+      throw new ConflictException('Brand with this name already exists');
+    }
+
     const category = new Category();
     category.categoryName = dto.categoryName;
-
     if (dto.parentCategoryId) {
       category.parentCategory = await this.categoryRepository.findOne({
         where: { id: dto.parentCategoryId },

@@ -24,6 +24,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { PaginatedRequestDto } from 'src/core/dtos/pagination.dto';
+import { SetMessage } from 'src/core/decorators/set-message.decorator';
 
 @ApiTags('Category')
 @Controller('category')
@@ -31,6 +32,7 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
+  @SetMessage('Category created successfully')
   @ApiOperation({ summary: 'Create a new category' })
   @ApiBody({ type: CreateCategoryDto })
   @ApiResponse({
@@ -38,7 +40,7 @@ export class CategoryController {
     description: 'Category created successfully',
     type: CategoryResponseDto,
   })
-  @ApiResponse({ status: 400, description: 'Validation failed' })
+  @ApiResponse({ status: 400, description: 'Failed to create Category' })
   async create(@Body() dto: CreateCategoryDto): Promise<CategoryResponseDto> {
     const category = await this.categoryService.create(dto);
     return plainToInstance(CategoryResponseDto, category, {
@@ -47,6 +49,7 @@ export class CategoryController {
   }
 
   @Post('categoryListByPage')
+  @SetMessage('Category List fetched successfully')
   @ApiOperation({ summary: 'Get all categories' })
   @ApiResponse({
     status: 200,
@@ -64,6 +67,7 @@ export class CategoryController {
   }
 
   @Get(':id')
+  @SetMessage('Category fetched successfully')
   @ApiOperation({ summary: 'Get a category by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'ID of the category' })
   @ApiResponse({
@@ -82,6 +86,7 @@ export class CategoryController {
   }
 
   @Put(':id')
+  @SetMessage('Category updated Successfully')
   @ApiOperation({ summary: 'Update a category by ID' })
   @ApiParam({
     name: 'id',
@@ -106,6 +111,7 @@ export class CategoryController {
   }
 
   @Delete(':id')
+  @SetMessage('Category deleted successfully')
   @ApiOperation({ summary: 'Delete a category by ID' })
   @ApiParam({
     name: 'id',
@@ -114,10 +120,7 @@ export class CategoryController {
   })
   @ApiResponse({ status: 200, description: 'Category deleted successfully' })
   @ApiResponse({ status: 404, description: 'Category not found' })
-  async remove(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<{ message: string }> {
+  async remove(@Param('id', ParseIntPipe) id: number) {
     await this.categoryService.remove(id);
-    return { message: `Category with ID ${id} deleted successfully` };
   }
 }

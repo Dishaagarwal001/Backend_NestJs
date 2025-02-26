@@ -21,7 +21,6 @@ import {
   ApiResponse,
   ApiParam,
   ApiBody,
-  ApiExtraModels,
   ApiOkResponse,
 } from '@nestjs/swagger';
 import { SetMessage } from 'src/core/decorators/set-message.decorator';
@@ -53,25 +52,8 @@ export class BrandController {
   @ApiOperation({
     summary: 'Get paginated list of brands',
   })
-  @ApiExtraModels(PaginatedBrandResponseDto)
   @ApiBody({
-    description: 'Pagination, filtering and sorting parameters',
-    schema: {
-      example: {
-        page: 1,
-        size: 10,
-        search: 'nike',
-        filter: {
-          isActive: true,
-        },
-        sortBy: [
-          {
-            key: 'createdAt',
-            direction: 'desc',
-          },
-        ],
-      },
-    },
+    type: PaginatedRequestDto,
   })
   @ApiOkResponse({
     description: 'Paginated list of brands returned successfully',
