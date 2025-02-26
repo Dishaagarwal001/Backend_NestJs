@@ -14,6 +14,18 @@ export abstract class BaseService<Entity, ResponseDto> {
     protected readonly searchFields: string[] = [],
   ) {}
 
+  protected toDto(entity: Entity): ResponseDto {
+    return plainToInstance(this.responseDto, entity, {
+      excludeExtraneousValues: true,
+    });
+  }
+
+  protected toDtos(entities: Entity[]): ResponseDto[] {
+    return plainToInstance(this.responseDto, entities, {
+      excludeExtraneousValues: true,
+    });
+  }
+
   async paginate(
     query: PaginatedRequestDto,
     relations: string[] = [],
@@ -21,7 +33,7 @@ export abstract class BaseService<Entity, ResponseDto> {
     const { page = 1, size = 10, search, filter, sortBy } = query;
     const skip = (page - 1) * size;
 
-    const where: FindOptionsWhere<Entity>[] | FindOptionsWhere<Entity> = {};
+    const where: FindOptionsWhere<Entity> = {};
 
     if (search && this.searchFields.length > 0) {
       where['$or'] = this.searchFields.map((field) => ({
@@ -52,9 +64,7 @@ export abstract class BaseService<Entity, ResponseDto> {
       numberOfPages: Math.ceil(total / size),
       numberOfItems: total,
       sortBy: sortBy || [],
-      items: plainToInstance(this.responseDto, items, {
-        excludeExtraneousValues: true,
-      }),
+      items: this.toDtos(items),
     };
   }
 }
