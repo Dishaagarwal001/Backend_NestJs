@@ -33,16 +33,24 @@ export abstract class BaseService<Entity, ResponseDto> {
     const { page = 1, size = 10, search, filter, sortBy } = query;
     const skip = (page - 1) * size;
 
-    const where: FindOptionsWhere<Entity> = {};
+    let where: FindOptionsWhere<Entity>[] | FindOptionsWhere<Entity> = [];
 
     if (search && this.searchFields.length > 0) {
-      where['$or'] = this.searchFields.map((field) => ({
+      where = this.searchFields.map((field) => ({
         [field]: ILike(`%${search}%`),
-      }));
+      })) as FindOptionsWhere<Entity>[];
     }
 
     if (filter) {
-      Object.assign(where, filter);
+      if (Array.isArray(where) && where.length > 0) {
+        where = where.map((condition) => ({ ...condition, ...filter }));
+      } else {
+        where = filter;
+      }
+    }
+
+    if (Array.isArray(where) && where.length === 0) {
+      where = {};
     }
 
     const findOptions: FindManyOptions<Entity> = {
@@ -63,7 +71,7 @@ export abstract class BaseService<Entity, ResponseDto> {
       currentPage: page,
       numberOfPages: Math.ceil(total / size),
       numberOfItems: total,
-      sortBy: sortBy || [],
+      sortBy: sortBy || null,
       items: this.toDtos(items),
     };
   }

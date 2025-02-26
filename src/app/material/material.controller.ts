@@ -24,6 +24,7 @@ import {
 } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { PaginatedRequestDto } from 'src/core/dtos/pagination.dto';
+import { SetMessage } from 'src/core/decorators/set-message.decorator';
 
 @ApiTags('Material')
 @Controller('material')
@@ -31,11 +32,12 @@ export class MaterialController {
   constructor(private readonly materialService: MaterialService) {}
 
   @Post()
+  @SetMessage('Materal Added successfully')
   @ApiOperation({ summary: 'Create a new material' })
   @ApiBody({ type: CreateMaterialDto })
   @ApiResponse({
     status: 201,
-    description: 'Material created successfully',
+    description: 'Material created Successfully',
     type: MaterialResponseDto,
   })
   @ApiResponse({ status: 400, description: 'Validation failed' })
@@ -46,11 +48,12 @@ export class MaterialController {
   }
 
   @Post('materialListByPage')
+  @SetMessage('Materal List fetched successfully')
   @ApiOperation({ summary: 'Get all materials' })
   @ApiResponse({
     status: 200,
     description: 'List of all materials',
-    type: [MaterialResponseDto],
+    type: [PaginatedMaterialResponseDto],
   })
   async findAll(
     @Body() request: PaginatedRequestDto,
@@ -63,6 +66,7 @@ export class MaterialController {
   }
 
   @Get(':id')
+  @SetMessage('Materal fetched successfully')
   @ApiOperation({ summary: 'Get a material by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'ID of the material' })
   @ApiResponse({
@@ -78,6 +82,7 @@ export class MaterialController {
   }
 
   @Patch(':id')
+  @SetMessage('Materal updated successfully')
   @ApiOperation({ summary: 'Update a material by ID' })
   @ApiParam({
     name: 'id',
@@ -99,6 +104,7 @@ export class MaterialController {
   }
 
   @Delete(':id')
+  @SetMessage('Materal deleted successfully')
   @ApiOperation({ summary: 'Delete a material by ID' })
   @ApiParam({
     name: 'id',
