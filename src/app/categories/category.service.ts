@@ -37,6 +37,7 @@ export class CategoryService extends BaseService<
 
     const category = new Category();
     category.categoryName = dto.categoryName;
+    category.description = dto.description;
     if (dto.parentCategoryId) {
       category.parentCategory = await this.categoryRepository.findOne({
         where: { id: dto.parentCategoryId },
