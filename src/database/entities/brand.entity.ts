@@ -17,8 +17,14 @@ export class Brand {
   @Column({ type: 'varchar', length: 10, name: 'brand_code' })
   brandCode: string;
 
-  @Column({ type: 'boolean', name: 'is_active' })
+  @Column({ type: 'varchar', length: 150, name: 'description' })
+  description: string;
+
+  @Column({ type: 'boolean', default: true, name: 'is_active' })
   isActive: boolean;
+
+  @Column({ type: 'boolean', default: false, name: 'is_deleted' })
+  isDeleted: boolean;
 
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;

@@ -32,6 +32,17 @@ export class CreateBrandDto {
   @Length(2, 10)
   brandCode: string;
 
+  @ApiProperty({
+    example: 'Description',
+    description: 'Brand Description',
+    minLength: 3,
+    maxLength: 150,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @Length(3, 150)
+  description: string;
+
   @ApiProperty({ example: true, description: 'Brand active status' })
   @IsBoolean()
   isActive: boolean;
@@ -63,10 +74,23 @@ export class UpdateBrandDto {
   brandCode?: string;
 
   @ApiProperty({
+    example: 'Description',
+    description: 'Brand Description',
+    minLength: 3,
+    maxLength: 150,
+  })
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  @Length(3, 150)
+  description?: string;
+
+  @ApiProperty({
     example: false,
     description: 'Brand active status',
     required: false,
   })
+  @IsOptional()
   @IsBoolean()
   isActive?: boolean;
 }
@@ -83,6 +107,10 @@ export class BrandResponseDto {
   @ApiProperty({ example: 'NIKE01', description: 'Brand code' })
   @Expose()
   brandCode: string;
+
+  @ApiProperty({ example: 'Description', description: 'Brand Description' })
+  @Expose()
+  description: string;
 
   @ApiProperty({ example: true, description: 'Brand active status' })
   @Expose()

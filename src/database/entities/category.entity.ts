@@ -17,6 +17,9 @@ export class Category {
   @Column({ type: 'varchar', length: 30, name: 'category_name' })
   categoryName: string;
 
+  @Column({ type: 'varchar', length: 150, name: 'description' })
+  description: string;
+
   @ManyToOne(() => Category, (category) => category.children, {
     nullable: true,
     onDelete: 'SET NULL',
@@ -26,6 +29,12 @@ export class Category {
 
   @OneToMany(() => Category, (category) => category.parentCategory)
   children: Category[];
+
+  @Column({ type: 'boolean', default: true, name: 'is_active' })
+  isActive: boolean;
+
+  @Column({ type: 'boolean', default: false, name: 'is_deleted' })
+  isDeleted: boolean;
 
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;

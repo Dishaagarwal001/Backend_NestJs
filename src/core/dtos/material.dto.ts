@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsString, Length } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { PaginatedResponseDto } from './pagination.dto';
@@ -21,9 +27,29 @@ export class CreateMaterialDto {
   @Length(2, 10)
   materialCode: string;
 
+  @ApiProperty({
+    example: 'Description',
+    description: 'Material Description',
+    minLength: 3,
+    maxLength: 150,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @Length(3, 150)
+  description?: string;
+
   @ApiProperty({ example: 1, description: 'Category ID of the material' })
   @IsNotEmpty()
   categoryId: number;
+
+  @ApiProperty({
+    example: false,
+    description: 'Material active status',
+    required: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
 }
 
 export class UpdateMaterialDto {
@@ -48,8 +74,28 @@ export class UpdateMaterialDto {
   materialCode?: string;
 
   @ApiProperty({
+    example: 'Description',
+    description: 'Material Description',
+    minLength: 3,
+    maxLength: 150,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @Length(3, 150)
+  description?: string;
+
+  @ApiProperty({
+    example: false,
+    description: 'Material active status',
+    required: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
+
+  @ApiProperty({
     example: 2,
-    description: 'Updated category ID of the material',
+    description: 'Updated Material ID of the material',
     required: false,
   })
   categoryId?: number;
@@ -72,18 +118,20 @@ export class MaterialResponseDto {
   @Expose()
   categoryId: number;
 
+  @ApiProperty({ example: true, description: 'Brand active status' })
+  @Expose()
+  isActive: boolean;
+
   @ApiProperty({
     example: '2025-02-18T12:00:00.000Z',
     description: 'Creation timestamp',
   })
-  @Expose()
   createdAt: Date;
 
   @ApiProperty({
     example: '2025-02-18T12:30:00.000Z',
     description: 'Last update timestamp',
   })
-  @Expose()
   updatedAt: Date;
 }
 

@@ -30,8 +30,11 @@ export abstract class BaseService<Entity, ResponseDto> {
     query: PaginatedRequestDto,
     relations: string[] = [],
   ): Promise<PaginatedResponseDto<ResponseDto>> {
-    const { page = 1, size = 10, search, filter, sortBy } = query;
-    const skip = (page - 1) * size;
+    const { page, size, search, filter, sortBy } = query;
+
+    const isPaginated = page !== undefined && size !== undefined;
+    const skip = isPaginated ? (page - 1) * size : 0;
+    const take = isPaginated ? size : undefined;
 
     let where: FindOptionsWhere<Entity>[] | FindOptionsWhere<Entity> = [];
 
@@ -55,7 +58,7 @@ export abstract class BaseService<Entity, ResponseDto> {
 
     const findOptions: FindManyOptions<Entity> = {
       skip,
-      take: size,
+      take,
       where,
       relations,
       order: sortBy?.reduce((acc, sort) => {
@@ -67,9 +70,9 @@ export abstract class BaseService<Entity, ResponseDto> {
     const [items, total] = await this.repository.findAndCount(findOptions);
 
     return {
-      pageSize: size,
-      currentPage: page,
-      numberOfPages: Math.ceil(total / size),
+      pageSize: isPaginated ? size : total,
+      currentPage: isPaginated ? page : 1,
+      numberOfPages: isPaginated ? Math.ceil(total / size) : 1,
       numberOfItems: total,
       sortBy: sortBy || null,
       items: this.toDtos(items),
