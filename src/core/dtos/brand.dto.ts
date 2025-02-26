@@ -7,6 +7,7 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
+import { PaginatedResponseDto } from './pagination.dto';
 
 export class CreateBrandDto {
   @ApiProperty({
@@ -84,20 +85,19 @@ export class BrandResponseDto {
   brandCode: string;
 
   @ApiProperty({ example: true, description: 'Brand active status' })
-  @Expose()
   isActive: boolean;
 
   @ApiProperty({
     example: '2025-02-18T12:00:00.000Z',
     description: 'Creation timestamp',
   })
-  @Expose()
   createdAt: Date;
 
   @ApiProperty({
     example: '2025-02-18T12:30:00.000Z',
     description: 'Last update timestamp',
   })
-  @Expose()
   updatedAt: Date;
 }
+
+export class PaginatedBrandResponseDto extends PaginatedResponseDto<BrandResponseDto> {}

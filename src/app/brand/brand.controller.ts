@@ -13,6 +13,7 @@ import {
   CreateBrandDto,
   UpdateBrandDto,
   BrandResponseDto,
+  PaginatedBrandResponseDto,
 } from 'src/core/dtos/brand.dto';
 import {
   ApiTags,
@@ -20,8 +21,11 @@ import {
   ApiResponse,
   ApiParam,
   ApiBody,
+  ApiExtraModels,
+  ApiOkResponse,
 } from '@nestjs/swagger';
 import { SetMessage } from 'src/core/decorators/set-message.decorator';
+import { PaginatedRequestDto } from 'src/core/dtos/pagination.dto';
 
 @ApiTags('Brands')
 @Controller('brands')
@@ -44,14 +48,94 @@ export class BrandController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all brands' })
-  @ApiResponse({
-    status: 200,
-    description: 'List of all brands',
-    type: [BrandResponseDto],
+  @ApiOperation({
+    summary: 'Get paginated list of brands',
   })
-  async findAll(): Promise<BrandResponseDto[]> {
-    return this.brandService.findAll();
+  @ApiExtraModels(PaginatedBrandResponseDto)
+  @ApiBody({
+    description: 'Pagination, filtering and sorting parameters',
+
+    schema: {
+      example: {
+        page: 1,
+
+        size: 10,
+
+        search: 'nike',
+
+        filter: {
+          isActive: true,
+        },
+
+        sortBy: [
+          {
+            key: 'createdAt',
+
+            direction: 'desc',
+          },
+        ],
+      },
+    },
+  })
+  @ApiOkResponse({
+    description: 'Paginated list of brands returned successfully',
+    schema: {
+      allOf: [
+        { $ref: '#/components/schemas/PaginatedResponseDto' },
+        {
+          properties: {
+            items: {
+              type: 'array',
+              items: { $ref: '#/components/schemas/BrandResponseDto' },
+            },
+            pageSize: {
+              type: 'number',
+              example: 10,
+              description: 'Number of items per page',
+            },
+            currentPage: {
+              type: 'number',
+              example: 1,
+              description: 'Current page number',
+            },
+            numberOfPages: {
+              type: 'number',
+              example: 5,
+              description: 'Total number of pages',
+            },
+            numberOfItems: {
+              type: 'number',
+              example: 42,
+              description: 'Total number of matching items',
+            },
+            sortBy: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  key: {
+                    type: 'string',
+                    example: 'brandName',
+                  },
+                  direction: {
+                    type: 'string',
+                    enum: ['asc', 'desc'],
+                    example: 'desc',
+                  },
+                },
+              },
+              example: [{ key: 'brandName', direction: 'desc' }],
+              description: 'Sorting criteria used',
+            },
+          },
+        },
+      ],
+    },
+  })
+  async findAll(
+    @Body() request: PaginatedRequestDto,
+  ): Promise<PaginatedBrandResponseDto> {
+    return this.brandService.paginatedSearch(request);
   }
 
   @Get(':id')

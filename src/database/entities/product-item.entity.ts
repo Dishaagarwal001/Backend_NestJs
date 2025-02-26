@@ -10,7 +10,7 @@ import { Product } from './product.entity';
 import { Currency } from './currency.entity';
 import { Color } from './color.entity';
 import { ProductImage } from './product-images.entity';
-import { UserFavourites } from './user-favourites.entity';
+import { Favorite } from './favourites.entity';
 
 @Entity('product_items')
 export class ProductItem {
@@ -35,9 +35,6 @@ export class ProductItem {
   @OneToMany(() => ProductImage, (productImage) => productImage.product)
   productImages: ProductImage[];
 
-  @OneToMany(
-    () => UserFavourites,
-    (userFavourites) => userFavourites.productItem,
-  )
-  favourites: UserFavourites[];
+  @OneToMany(() => Favorite, (favorite) => favorite.productItem)
+  favorites: Favorite[];
 }

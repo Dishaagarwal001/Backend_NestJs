@@ -127,7 +127,6 @@ export class AuthService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const activationUrl = `${clientUrl}/activate/${activationToken}`;
 
-    console.log(activationUrl, 'activationtoken');
     // Send activation email
     await this.mailerService.sendRegistrationUrl({
       to: user.email,

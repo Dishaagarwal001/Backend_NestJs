@@ -9,6 +9,7 @@ import {
   Matches,
 } from 'class-validator';
 import { Expose } from 'class-transformer';
+import { PaginatedResponseDto } from './pagination.dto';
 
 enum Gender {
   Male = 'm',
@@ -219,3 +220,5 @@ export class UserResponseDto {
   @Expose()
   updatedAt: Date;
 }
+
+export class PaginatedUserResponseDto extends PaginatedResponseDto<UserResponseDto> {}

@@ -1,6 +1,7 @@
 import { IsNotEmpty, IsString, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
+import { PaginatedResponseDto } from './pagination.dto';
 
 export class CreateMaterialDto {
   @ApiProperty({
@@ -85,3 +86,5 @@ export class MaterialResponseDto {
   @Expose()
   updatedAt: Date;
 }
+
+export class PaginatedMaterialResponseDto extends PaginatedResponseDto<MaterialResponseDto> {}

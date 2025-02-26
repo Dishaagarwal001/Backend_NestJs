@@ -13,6 +13,7 @@ import {
   CreateCategoryDto,
   UpdateCategoryDto,
   CategoryResponseDto,
+  PaginatedCategoryResponseDto,
 } from 'src/core/dtos/category.dto';
 import { plainToInstance } from 'class-transformer';
 import {
@@ -22,6 +23,7 @@ import {
   ApiParam,
   ApiBody,
 } from '@nestjs/swagger';
+import { PaginatedRequestDto } from 'src/core/dtos/pagination.dto';
 
 @ApiTags('Categories')
 @Controller('categories')
@@ -51,9 +53,12 @@ export class CategoryController {
     description: 'List of all categories',
     type: [CategoryResponseDto],
   })
-  async findAll(): Promise<CategoryResponseDto[]> {
-    const categories = await this.categoryService.findAll();
-    return plainToInstance(CategoryResponseDto, categories, {
+  async findAll(
+    @Body() request: PaginatedRequestDto,
+  ): Promise<PaginatedCategoryResponseDto> {
+    const paginatedCategories =
+      await this.categoryService.paginatedSearch(request);
+    return plainToInstance(PaginatedCategoryResponseDto, paginatedCategories, {
       excludeExtraneousValues: true,
     });
   }

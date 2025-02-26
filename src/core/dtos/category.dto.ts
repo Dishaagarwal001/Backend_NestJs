@@ -1,6 +1,7 @@
 import { IsNotEmpty, IsString, Length, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
+import { PaginatedResponseDto } from './pagination.dto';
 
 export class CreateCategoryDto {
   @ApiProperty({
@@ -76,3 +77,5 @@ export class CategoryResponseDto {
   @Expose()
   updatedAt: Date;
 }
+
+export class PaginatedCategoryResponseDto extends PaginatedResponseDto<CategoryResponseDto> {}
