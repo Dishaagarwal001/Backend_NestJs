@@ -9,7 +9,6 @@ import {
   MaterialResponseDto,
   PaginatedMaterialResponseDto,
 } from 'src/core/dtos/material.dto';
-import { plainToInstance } from 'class-transformer';
 import { BaseService } from '../base.service';
 import { PaginatedRequestDto } from 'src/core/dtos/pagination.dto';
 
@@ -44,9 +43,7 @@ export class MaterialService extends BaseService<
       category,
     });
     await this.materialRepository.save(material);
-    return plainToInstance(MaterialResponseDto, material, {
-      excludeExtraneousValues: true,
-    });
+    return this.toDto(material);
   }
 
   async paginatedSearch(
@@ -55,7 +52,7 @@ export class MaterialService extends BaseService<
     return super.paginate(query, ['category']);
   }
 
-  async findOne(id: number): Promise<MaterialResponseDto> {
+  async findOne(id: number): Promise<Material> {
     const material = await this.materialRepository.findOne({
       where: { id },
       relations: ['category'],
@@ -63,19 +60,18 @@ export class MaterialService extends BaseService<
     if (!material) {
       throw new NotFoundException(`Material with ID ${id} not found`);
     }
-    return plainToInstance(MaterialResponseDto, material, {
-      excludeExtraneousValues: true,
-    });
+    return material;
   }
 
   async update(
     id: number,
     updateMaterialDto: UpdateMaterialDto,
   ): Promise<MaterialResponseDto> {
-    const material = await this.materialRepository.findOne({
-      where: { id },
-      relations: ['category'],
+    const material = await this.materialRepository.preload({
+      id,
+      ...updateMaterialDto,
     });
+
     if (!material) {
       throw new NotFoundException(`Material with ID ${id} not found`);
     }
@@ -92,17 +88,14 @@ export class MaterialService extends BaseService<
       material.category = category;
     }
 
-    Object.assign(material, updateMaterialDto);
     await this.materialRepository.save(material);
-    return plainToInstance(MaterialResponseDto, material, {
-      excludeExtraneousValues: true,
-    });
+    return this.toDto(material);
   }
 
   async remove(id: number): Promise<void> {
-    const result = await this.materialRepository.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException(`Material with ID ${id} not found`);
-    }
+    const material = await this.findOne(id);
+    material.isDeleted = true;
+    material.isActive = false;
+    await this.materialRepository.save(material);
   }
 }

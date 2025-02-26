@@ -78,7 +78,10 @@ export class MaterialController {
   async findOne(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<MaterialResponseDto> {
-    return this.materialService.findOne(id);
+    const material = this.materialService.findOne(id);
+    return plainToInstance(MaterialResponseDto, material, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Patch(':id')
@@ -113,10 +116,7 @@ export class MaterialController {
   })
   @ApiResponse({ status: 200, description: 'Material deleted successfully' })
   @ApiResponse({ status: 404, description: 'Material not found' })
-  async remove(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<{ message: string }> {
+  async remove(@Param('id', ParseIntPipe) id: number) {
     await this.materialService.remove(id);
-    return { message: `Material with ID ${id} deleted successfully` };
   }
 }

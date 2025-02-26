@@ -25,6 +25,7 @@ import {
 } from '@nestjs/swagger';
 import { SetMessage } from 'src/core/decorators/set-message.decorator';
 import { PaginatedRequestDto } from 'src/core/dtos/pagination.dto';
+import { plainToInstance } from 'class-transformer';
 
 @ApiTags('Brand')
 @Controller('brand')
@@ -76,12 +77,12 @@ export class BrandController {
               example: 1,
               description: 'Current page number',
             },
-            numberOfPages: {
+            totalPages: {
               type: 'number',
               example: 5,
               description: 'Total number of pages',
             },
-            numberOfItems: {
+            totalItems: {
               type: 'number',
               example: 42,
               description: 'Total number of matching items',
@@ -129,7 +130,10 @@ export class BrandController {
   async findOne(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<BrandResponseDto> {
-    return this.brandService.findOne(id);
+    const brand = this.brandService.findOne(id);
+    return plainToInstance(BrandResponseDto, brand, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Patch(':id')

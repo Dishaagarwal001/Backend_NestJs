@@ -27,7 +27,7 @@ export class CategoryService extends BaseService<
     super(categoryRepository, CategoryResponseDto, ['categoryName']);
   }
 
-  async create(dto: CreateCategoryDto): Promise<Category> {
+  async create(dto: CreateCategoryDto): Promise<CategoryResponseDto> {
     const existingByName = await this.categoryRepository.findOne({
       where: { categoryName: dto.categoryName },
     });
@@ -37,13 +37,15 @@ export class CategoryService extends BaseService<
 
     const category = new Category();
     category.categoryName = dto.categoryName;
+    category.description = dto.description;
     if (dto.parentCategoryId) {
       category.parentCategory = await this.categoryRepository.findOne({
         where: { id: dto.parentCategoryId },
       });
     }
 
-    return await this.categoryRepository.save(category);
+    await this.categoryRepository.save(category);
+    return this.toDto(category);
   }
 
   async paginatedSearch(
@@ -63,26 +65,35 @@ export class CategoryService extends BaseService<
     return category;
   }
 
-  async update(id: number, dto: UpdateCategoryDto): Promise<Category> {
-    const category = await this.findOne(id);
+  async update(
+    id: number,
+    updateCategoryDto: UpdateCategoryDto,
+  ): Promise<CategoryResponseDto> {
+    const category = await this.categoryRepository.preload({
+      id,
+      ...updateCategoryDto,
+    });
 
-    if (dto.categoryName) {
-      category.categoryName = dto.categoryName;
+    if (!category) {
+      throw new NotFoundException(`Category with ID ${id} not found`);
     }
 
-    if (dto.parentCategoryId !== undefined) {
-      category.parentCategory = dto.parentCategoryId
+    if (updateCategoryDto.parentCategoryId !== undefined) {
+      category.parentCategory = updateCategoryDto.parentCategoryId
         ? await this.categoryRepository.findOne({
-            where: { id: dto.parentCategoryId },
+            where: { id: updateCategoryDto.parentCategoryId },
           })
         : null;
     }
 
-    return await this.categoryRepository.save(category);
+    await this.categoryRepository.save(category);
+    return this.toDto(category);
   }
 
   async remove(id: number): Promise<void> {
     const category = await this.findOne(id);
-    await this.categoryRepository.remove(category);
+    category.isDeleted = true;
+    category.isActive = false;
+    await this.categoryRepository.save(category);
   }
 }
