@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Brand } from 'src/database/entities/brand.entity';
@@ -8,7 +12,6 @@ import {
   BrandResponseDto,
   PaginatedBrandResponseDto,
 } from 'src/core/dtos/brand.dto';
-import { plainToInstance } from 'class-transformer';
 import { PaginatedRequestDto } from 'src/core/dtos/pagination.dto';
 import { BaseService } from '../base.service';
 
@@ -21,12 +24,6 @@ export class BrandService extends BaseService<Brand, BrandResponseDto> {
     super(brandRepository, BrandResponseDto, ['brandName']);
   }
 
-  private toDto(brand: Brand): BrandResponseDto {
-    return plainToInstance(BrandResponseDto, brand, {
-      excludeExtraneousValues: true,
-    });
-  }
-
   async paginatedSearch(
     query: PaginatedRequestDto,
   ): Promise<PaginatedBrandResponseDto> {
@@ -34,9 +31,23 @@ export class BrandService extends BaseService<Brand, BrandResponseDto> {
   }
 
   async create(createBrandDto: CreateBrandDto): Promise<BrandResponseDto> {
-    const brand = this.brandRepository.create(createBrandDto);
-    await this.brandRepository.save(brand);
-    return this.toDto(brand);
+    const existingByCode = await this.brandRepository.findOne({
+      where: { brandCode: createBrandDto.brandCode },
+    });
+    if (existingByCode) {
+      throw new ConflictException('Brand with this code already exists');
+    }
+
+    const existingByName = await this.brandRepository.findOne({
+      where: { brandName: createBrandDto.brandName },
+    });
+    if (existingByName) {
+      throw new ConflictException('Brand with this name already exists');
+    }
+
+    const newBrand = this.brandRepository.create(createBrandDto);
+    const savedBrand = await this.brandRepository.save(newBrand);
+    return this.toDto(savedBrand);
   }
 
   async findOne(id: number): Promise<BrandResponseDto> {

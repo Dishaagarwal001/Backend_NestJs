@@ -33,6 +33,7 @@ export class BrandController {
   constructor(private readonly brandService: BrandService) {}
 
   @Post()
+  @SetMessage('Brand created successfully')
   @ApiOperation({ summary: 'Create a new brand' })
   @ApiBody({ type: CreateBrandDto })
   @ApiResponse({
@@ -48,6 +49,7 @@ export class BrandController {
   }
 
   @Post('brandListByPage')
+  @SetMessage('Brand List fetched successfully')
   @ApiOperation({
     summary: 'Get paginated list of brands',
   })
@@ -133,6 +135,7 @@ export class BrandController {
   }
 
   @Get(':id')
+  @SetMessage('Brand fetched successfully')
   @ApiOperation({ summary: 'Get a brand by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'ID of the brand' })
   @ApiResponse({
@@ -148,6 +151,7 @@ export class BrandController {
   }
 
   @Patch(':id')
+  @SetMessage('Brand updated successfully')
   @ApiOperation({ summary: 'Update a brand by ID' })
   @ApiParam({
     name: 'id',
