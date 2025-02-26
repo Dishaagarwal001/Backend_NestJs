@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsString, Length, IsOptional } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  Length,
+  IsOptional,
+  IsBoolean,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { PaginatedResponseDto } from './pagination.dto';
@@ -14,6 +20,26 @@ export class CreateCategoryDto {
   @IsNotEmpty()
   @Length(2, 30)
   categoryName: string;
+
+  @ApiProperty({
+    example: 'Description',
+    description: 'Category Description',
+    minLength: 3,
+    maxLength: 150,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @Length(3, 150)
+  description: string;
+
+  @ApiProperty({
+    example: false,
+    description: 'Category active status',
+    required: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
 
   @ApiProperty({
     example: 1,
@@ -38,12 +64,33 @@ export class UpdateCategoryDto {
   categoryName?: string;
 
   @ApiProperty({
+    example: 'Description',
+    description: 'Category Description',
+    minLength: 3,
+    maxLength: 150,
+  })
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  @Length(3, 150)
+  description?: string;
+
+  @ApiProperty({
     example: 1,
     description: 'Parent category ID',
     required: false,
   })
   @IsOptional()
   parentCategoryId?: number;
+
+  @ApiProperty({
+    example: false,
+    description: 'Brand active status',
+    required: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
 }
 
 export class CategoryResponseDto {
@@ -55,6 +102,10 @@ export class CategoryResponseDto {
   @Expose()
   categoryName: string;
 
+  @ApiProperty({ example: 'Description', description: 'Category Description' })
+  @Expose()
+  description: string;
+
   @ApiProperty({
     example: 1,
     description: 'Parent category ID',
@@ -63,18 +114,20 @@ export class CategoryResponseDto {
   @Expose()
   parentCategoryId?: number;
 
+  @ApiProperty({ example: true, description: 'Category active status' })
+  @Expose()
+  isActive: boolean;
+
   @ApiProperty({
     example: '2025-02-18T12:00:00.000Z',
     description: 'Creation timestamp',
   })
-  @Expose()
   createdAt: Date;
 
   @ApiProperty({
     example: '2025-02-18T12:30:00.000Z',
     description: 'Last update timestamp',
   })
-  @Expose()
   updatedAt: Date;
 }
 
