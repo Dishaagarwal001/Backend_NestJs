@@ -3,17 +3,26 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from 'src/database/entities/category.entity';
 import {
+  CategoryResponseDto,
   CreateCategoryDto,
+  PaginatedCategoryResponseDto,
   UpdateCategoryDto,
 } from 'src/core/dtos/category.dto';
+import { BaseService } from '../base.service';
+import { PaginatedRequestDto } from 'src/core/dtos/pagination.dto';
 // import { plainToInstance } from 'class-transformer';
 
 @Injectable()
-export class CategoryService {
+export class CategoryService extends BaseService<
+  Category,
+  CategoryResponseDto
+> {
   constructor(
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
-  ) {}
+  ) {
+    super(categoryRepository, CategoryResponseDto, ['categoryName']);
+  }
 
   async create(dto: CreateCategoryDto): Promise<Category> {
     const category = new Category();
@@ -28,10 +37,10 @@ export class CategoryService {
     return await this.categoryRepository.save(category);
   }
 
-  async findAll(): Promise<Category[]> {
-    return await this.categoryRepository.find({
-      relations: ['parentCategory', 'children'],
-    });
+  async paginatedSearch(
+    query: PaginatedRequestDto,
+  ): Promise<PaginatedCategoryResponseDto> {
+    return super.paginate(query, ['parentCategory', 'children']);
   }
 
   async findOne(id: number): Promise<Category> {

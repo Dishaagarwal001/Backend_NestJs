@@ -25,7 +25,6 @@ export class SuccessResponseInterceptor implements NestInterceptor {
         data,
         errorCode: null,
         errors: [],
-        pagination: null,
       })),
     );
   }

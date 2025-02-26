@@ -13,6 +13,7 @@ import {
   CreateMaterialDto,
   UpdateMaterialDto,
   MaterialResponseDto,
+  PaginatedMaterialResponseDto,
 } from 'src/core/dtos/material.dto';
 import {
   ApiTags,
@@ -21,6 +22,8 @@ import {
   ApiParam,
   ApiBody,
 } from '@nestjs/swagger';
+import { plainToInstance } from 'class-transformer';
+import { PaginatedRequestDto } from 'src/core/dtos/pagination.dto';
 
 @ApiTags('Materials')
 @Controller('materials')
@@ -49,8 +52,14 @@ export class MaterialController {
     description: 'List of all materials',
     type: [MaterialResponseDto],
   })
-  async findAll(): Promise<MaterialResponseDto[]> {
-    return this.materialService.findAll();
+  async findAll(
+    @Body() request: PaginatedRequestDto,
+  ): Promise<PaginatedMaterialResponseDto> {
+    const paginatedResponse =
+      await this.materialService.paginatedSearch(request);
+    return plainToInstance(PaginatedMaterialResponseDto, paginatedResponse, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Get(':id')

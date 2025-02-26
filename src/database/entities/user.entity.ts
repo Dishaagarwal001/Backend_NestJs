@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 import { Role } from './role.entity';
 import { RefreshToken } from './refresh-token.entity';
-import { UserFavourites } from './user-favourites.entity';
+import { Folder } from './folder.entity';
 
 enum Gender {
   Male = 'm',
@@ -59,8 +59,8 @@ export class User {
   @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user)
   refreshTokens: RefreshToken[];
 
-  @OneToMany(() => UserFavourites, (userFavourites) => userFavourites.user)
-  favourites: UserFavourites[];
+  @OneToMany(() => Folder, (folder) => folder.user)
+  folders: Folder[];
 
   @Column({ default: true, name: 'is_active' })
   isActive: boolean;

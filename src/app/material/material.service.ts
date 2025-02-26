@@ -7,17 +7,25 @@ import {
   CreateMaterialDto,
   UpdateMaterialDto,
   MaterialResponseDto,
+  PaginatedMaterialResponseDto,
 } from 'src/core/dtos/material.dto';
 import { plainToInstance } from 'class-transformer';
+import { BaseService } from '../base.service';
+import { PaginatedRequestDto } from 'src/core/dtos/pagination.dto';
 
 @Injectable()
-export class MaterialService {
+export class MaterialService extends BaseService<
+  Material,
+  MaterialResponseDto
+> {
   constructor(
     @InjectRepository(Material)
     private readonly materialRepository: Repository<Material>,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
-  ) {}
+  ) {
+    super(materialRepository, MaterialResponseDto, ['materialName']);
+  }
 
   async create(
     createMaterialDto: CreateMaterialDto,
@@ -41,13 +49,10 @@ export class MaterialService {
     });
   }
 
-  async findAll(): Promise<MaterialResponseDto[]> {
-    const materials = await this.materialRepository.find({
-      relations: ['category'],
-    });
-    return plainToInstance(MaterialResponseDto, materials, {
-      excludeExtraneousValues: true,
-    });
+  async paginatedSearch(
+    query: PaginatedRequestDto,
+  ): Promise<PaginatedMaterialResponseDto> {
+    return super.paginate(query, ['category']);
   }
 
   async findOne(id: number): Promise<MaterialResponseDto> {
