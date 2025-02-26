@@ -38,22 +38,31 @@ export abstract class BaseService<Entity, ResponseDto> {
 
     let where: FindOptionsWhere<Entity>[] | FindOptionsWhere<Entity> = [];
 
+    const defaultFilter: FindOptionsWhere<Entity> = { isDeleted: false } as any;
+
     if (search && this.searchFields.length > 0) {
       where = this.searchFields.map((field) => ({
         [field]: ILike(`%${search}%`),
+        ...defaultFilter,
       })) as FindOptionsWhere<Entity>[];
     }
 
     if (filter) {
+      if (!('isActive' in filter)) {
+        filter.isActive = true;
+      }
+
       if (Array.isArray(where) && where.length > 0) {
         where = where.map((condition) => ({ ...condition, ...filter }));
       } else {
-        where = filter;
+        where = { ...defaultFilter, ...filter };
       }
+    } else {
+      where = defaultFilter;
     }
 
     if (Array.isArray(where) && where.length === 0) {
-      where = {};
+      where = defaultFilter;
     }
 
     const findOptions: FindManyOptions<Entity> = {
@@ -70,10 +79,10 @@ export abstract class BaseService<Entity, ResponseDto> {
     const [items, total] = await this.repository.findAndCount(findOptions);
 
     return {
-      pageSize: isPaginated ? size : total,
       currentPage: isPaginated ? page : 1,
-      numberOfPages: isPaginated ? Math.ceil(total / size) : 1,
-      numberOfItems: total,
+      pageSize: isPaginated ? size : total,
+      totalPages: isPaginated ? Math.ceil(total / size) : 1,
+      totalItems: total,
       sortBy: sortBy || null,
       items: this.toDtos(items),
     };

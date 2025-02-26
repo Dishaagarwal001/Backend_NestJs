@@ -59,11 +59,7 @@ export class CategoryController {
   async findAll(
     @Body() request: PaginatedRequestDto,
   ): Promise<PaginatedCategoryResponseDto> {
-    const paginatedCategories =
-      await this.categoryService.paginatedSearch(request);
-    return plainToInstance(PaginatedCategoryResponseDto, paginatedCategories, {
-      excludeExtraneousValues: true,
-    });
+    return this.categoryService.paginatedSearch(request);
   }
 
   @Get(':id')

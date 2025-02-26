@@ -112,7 +112,7 @@ export class CategoryResponseDto {
     nullable: true,
   })
   @Expose()
-  parentCategoryId?: number;
+  parentCategoryId?: number | null;
 
   @ApiProperty({ example: true, description: 'Category active status' })
   @Expose()

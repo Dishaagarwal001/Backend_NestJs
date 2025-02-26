@@ -46,16 +46,16 @@ export class BrandService extends BaseService<Brand, BrandResponseDto> {
     }
 
     const newBrand = this.brandRepository.create(createBrandDto);
-    const savedBrand = await this.brandRepository.save(newBrand);
-    return this.toDto(savedBrand);
+    await this.brandRepository.save(newBrand);
+    return this.toDto(newBrand);
   }
 
-  async findOne(id: number): Promise<BrandResponseDto> {
+  async findOne(id: number): Promise<Brand> {
     const brand = await this.brandRepository.findOne({ where: { id } });
     if (!brand) {
       throw new NotFoundException(`Brand with ID ${id} not found`);
     }
-    return this.toDto(brand);
+    return brand;
   }
 
   async update(
@@ -71,9 +71,9 @@ export class BrandService extends BaseService<Brand, BrandResponseDto> {
   }
 
   async remove(id: number): Promise<void> {
-    const result = await this.brandRepository.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException(`Brand with ID ${id} not found`);
-    }
+    const brand = await this.findOne(id);
+    brand.isDeleted = true;
+    brand.isActive = false;
+    await this.brandRepository.save(brand);
   }
 }

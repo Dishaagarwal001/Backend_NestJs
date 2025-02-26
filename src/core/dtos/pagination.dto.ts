@@ -82,10 +82,10 @@ export class PaginatedResponseDto<T> {
   currentPage: number;
 
   @ApiProperty({ example: 5, description: 'Total number of pages' })
-  numberOfPages: number;
+  totalPages: number;
 
   @ApiProperty({ example: 50, description: 'Total number of items' })
-  numberOfItems: number;
+  totalItems: number;
 
   @ApiProperty({
     type: [SortDto],
