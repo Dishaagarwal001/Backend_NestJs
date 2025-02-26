@@ -85,6 +85,7 @@ export class BrandResponseDto {
   brandCode: string;
 
   @ApiProperty({ example: true, description: 'Brand active status' })
+  @Expose()
   isActive: boolean;
 
   @ApiProperty({
