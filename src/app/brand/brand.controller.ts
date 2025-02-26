@@ -27,8 +27,8 @@ import {
 import { SetMessage } from 'src/core/decorators/set-message.decorator';
 import { PaginatedRequestDto } from 'src/core/dtos/pagination.dto';
 
-@ApiTags('Brands')
-@Controller('brands')
+@ApiTags('Brand')
+@Controller('brand')
 export class BrandController {
   constructor(private readonly brandService: BrandService) {}
 
@@ -47,30 +47,24 @@ export class BrandController {
     return this.brandService.create(createBrandDto);
   }
 
-  @Get()
+  @Post('brandListByPage')
   @ApiOperation({
     summary: 'Get paginated list of brands',
   })
   @ApiExtraModels(PaginatedBrandResponseDto)
   @ApiBody({
     description: 'Pagination, filtering and sorting parameters',
-
     schema: {
       example: {
         page: 1,
-
         size: 10,
-
         search: 'nike',
-
         filter: {
           isActive: true,
         },
-
         sortBy: [
           {
             key: 'createdAt',
-
             direction: 'desc',
           },
         ],
