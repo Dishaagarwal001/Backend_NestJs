@@ -58,11 +58,7 @@ export class MaterialController {
   async findAll(
     @Body() request: PaginatedRequestDto,
   ): Promise<PaginatedMaterialResponseDto> {
-    const paginatedResponse =
-      await this.materialService.paginatedSearch(request);
-    return plainToInstance(PaginatedMaterialResponseDto, paginatedResponse, {
-      excludeExtraneousValues: true,
-    });
+    return this.materialService.paginatedSearch(request);
   }
 
   @Get(':id')

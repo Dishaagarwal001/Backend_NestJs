@@ -6,7 +6,7 @@ import {
   Length,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 import { PaginatedResponseDto } from './pagination.dto';
 
 export class CreateMaterialDto {
@@ -116,7 +116,8 @@ export class MaterialResponseDto {
 
   @ApiProperty({ example: 1, description: 'Category ID of the material' })
   @Expose()
-  categoryId: number;
+  @Transform(({ obj }) => obj.category?.id || null)
+  categoryId: number | null;
 
   @ApiProperty({ example: true, description: 'Brand active status' })
   @Expose()

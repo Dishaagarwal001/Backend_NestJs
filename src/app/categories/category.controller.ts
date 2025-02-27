@@ -42,10 +42,7 @@ export class CategoryController {
   })
   @ApiResponse({ status: 400, description: 'Failed to create Category' })
   async create(@Body() dto: CreateCategoryDto): Promise<CategoryResponseDto> {
-    const category = await this.categoryService.create(dto);
-    return plainToInstance(CategoryResponseDto, category, {
-      excludeExtraneousValues: true,
-    });
+    return this.categoryService.create(dto);
   }
 
   @Post('categoryListByPage')
@@ -100,10 +97,7 @@ export class CategoryController {
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateCategoryDto,
   ): Promise<CategoryResponseDto> {
-    const category = await this.categoryService.update(id, dto);
-    return plainToInstance(CategoryResponseDto, category, {
-      excludeExtraneousValues: true,
-    });
+    return this.categoryService.update(id, dto);
   }
 
   @Delete(':id')

@@ -11,7 +11,8 @@ import { MailerService } from '@nestjs-modules/mailer';
 export class EmailService {
   constructor(
     private readonly mailerService: MailerService,
-    @InjectQueue('email') private readonly emailQueue: Queue,
+    @InjectQueue('email')
+    private readonly emailQueue: Queue,
   ) {}
 
   async sendWelcomeEmail(to: string, name: string): Promise<void> {
