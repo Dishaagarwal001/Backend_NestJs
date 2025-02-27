@@ -42,8 +42,8 @@ export class MaterialService extends BaseService<
       ...createMaterialDto,
       category,
     });
-    await this.materialRepository.save(material);
-    return this.toDto(material);
+    const savedMaterial = await this.materialRepository.save(material);
+    return this.toDto(savedMaterial);
   }
 
   async paginatedSearch(

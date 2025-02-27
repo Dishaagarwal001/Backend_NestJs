@@ -6,7 +6,7 @@ import {
   IsBoolean,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 import { PaginatedResponseDto } from './pagination.dto';
 
 export class CreateCategoryDto {
@@ -112,6 +112,7 @@ export class CategoryResponseDto {
     nullable: true,
   })
   @Expose()
+  @Transform(({ obj }) => obj.parentCategory?.id || null)
   parentCategoryId?: number | null;
 
   @ApiProperty({ example: true, description: 'Category active status' })

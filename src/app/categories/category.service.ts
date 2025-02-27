@@ -44,8 +44,8 @@ export class CategoryService extends BaseService<
       });
     }
 
-    await this.categoryRepository.save(category);
-    return this.toDto(category);
+    const newCategory = await this.categoryRepository.save(category);
+    return this.toDto(newCategory);
   }
 
   async paginatedSearch(
@@ -86,8 +86,8 @@ export class CategoryService extends BaseService<
         : null;
     }
 
-    await this.categoryRepository.save(category);
-    return this.toDto(category);
+    const updatedCategory = await this.categoryRepository.save(category);
+    return this.toDto(updatedCategory);
   }
 
   async remove(id: number): Promise<void> {

@@ -16,7 +16,7 @@ export class Folder {
   id: number;
 
   @Column({ type: 'varchar', length: 255 })
-  name: string;
+  folderName: string;
 
   @ManyToOne(() => User, (user) => user.folders, { onDelete: 'CASCADE' })
   user: User;

@@ -39,31 +39,29 @@ import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
       },
     }),
 
-    // Global Redis Connection
+    // Global Redis Connection using TLS (Render Redis requires `rediss://`)
     BullModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async () => ({
+      useFactory: async (configService: ConfigService) => ({
         connection: {
-          host: 'oregon-keyvalue.render.com',
-          port: 6379,
-          password: 'T6yrPucbeImDTkhoiWMpEQqOzCMic3kO',
-          tls: {}, // Required for Render Redis
+          host: configService.get<string>('REDIS_HOST'),
+          port: configService.get<number>('REDIS_PORT'),
+          username: configService.get<string>('REDIS_USER'),
+          password: configService.get<string>('REDIS_PASS'),
+          tls: {}, // Required for secure Redis connection
         },
       }),
     }),
 
-    // Register 'email' queue
     BullModule.registerQueueAsync({
       name: 'email',
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
-        const redisUrl = configService.get<string>('REDIS_URL');
-
         return {
           connection: {
-            url: redisUrl,
+            url: configService.get<string>('REDIS_URL'),
             tls: {},
           },
         };
