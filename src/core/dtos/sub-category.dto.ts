@@ -6,10 +6,10 @@ import {
   IsBoolean,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 import { PaginatedResponseDto } from './pagination.dto';
 
-export class CreateCategoryDto {
+export class CreateSubCategoryDto {
   @ApiProperty({
     example: 'Furniture',
     description: 'Category name',
@@ -19,7 +19,7 @@ export class CreateCategoryDto {
   @IsString()
   @IsNotEmpty()
   @Length(2, 30)
-  categoryName: string;
+  subCategoryName: string;
 
   @ApiProperty({
     example: 'Description',
@@ -40,9 +40,17 @@ export class CreateCategoryDto {
   @IsOptional()
   @IsBoolean()
   isActive?: boolean;
+
+  @ApiProperty({
+    example: 1,
+    description: 'Parent category ID',
+    required: false,
+  })
+  @IsOptional()
+  parentCategoryId?: number;
 }
 
-export class UpdateCategoryDto {
+export class UpdateSubCategoryDto {
   @ApiProperty({
     example: 'Office Chairs',
     description: 'Category name',
@@ -53,7 +61,7 @@ export class UpdateCategoryDto {
   @IsString()
   @Length(2, 30)
   @IsOptional()
-  categoryName?: string;
+  subCategoryName?: string;
 
   @ApiProperty({
     example: 'Description',
@@ -68,6 +76,14 @@ export class UpdateCategoryDto {
   description?: string;
 
   @ApiProperty({
+    example: 1,
+    description: 'Parent category ID',
+    required: false,
+  })
+  @IsOptional()
+  parentCategoryId?: number;
+
+  @ApiProperty({
     example: false,
     description: 'Brand active status',
     required: false,
@@ -77,18 +93,27 @@ export class UpdateCategoryDto {
   isActive?: boolean;
 }
 
-export class CategoryResponseDto {
+export class SubCategoryResponseDto {
   @ApiProperty({ example: 1, description: 'Category ID' })
   @Expose()
   id: number;
 
   @ApiProperty({ example: 'Furniture', description: 'Category name' })
   @Expose()
-  categoryName: string;
+  @Transform(({ obj }) => obj.categoryName)
+  subCategoryName: string;
 
   @ApiProperty({ example: 'Description', description: 'Category Description' })
   @Expose()
   description: string;
+
+  @ApiProperty({
+    example: 1,
+    description: 'Parent category ID',
+    nullable: true,
+  })
+  @Transform(({ obj }) => obj.parentCategory?.id || null)
+  parentCategoryId?: number | null;
 
   @ApiProperty({ example: true, description: 'Category active status' })
   @Expose()
@@ -107,4 +132,4 @@ export class CategoryResponseDto {
   updatedAt: Date;
 }
 
-export class PaginatedCategoryResponseDto extends PaginatedResponseDto<CategoryResponseDto> {}
+export class PaginatedSubCategoryResponseDto extends PaginatedResponseDto<SubCategoryResponseDto> {}
