@@ -53,7 +53,7 @@ export class CategoryController {
     description: 'List of all categories',
     type: [CategoryResponseDto],
   })
-  async findAll(
+  async findAllCategories(
     @Body() request: PaginatedRequestDto,
   ): Promise<PaginatedCategoryResponseDto> {
     return this.categoryService.paginatedSearch(request);

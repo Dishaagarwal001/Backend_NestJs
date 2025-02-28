@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { Category } from 'src/database/entities/category.entity';
 import {
   CategoryResponseDto,
@@ -38,11 +38,7 @@ export class CategoryService extends BaseService<
     const category = new Category();
     category.categoryName = dto.categoryName;
     category.description = dto.description;
-    if (dto.parentCategoryId) {
-      category.parentCategory = await this.categoryRepository.findOne({
-        where: { id: dto.parentCategoryId },
-      });
-    }
+    category.parentCategory = null;
 
     const newCategory = await this.categoryRepository.save(category);
     return this.toDto(newCategory);
@@ -51,6 +47,10 @@ export class CategoryService extends BaseService<
   async paginatedSearch(
     query: PaginatedRequestDto,
   ): Promise<PaginatedCategoryResponseDto> {
+    if (!query.filter) {
+      query.filter = {};
+    }
+    query.filter.parentCategory = IsNull();
     return super.paginate(query, ['parentCategory', 'children']);
   }
 
@@ -76,14 +76,6 @@ export class CategoryService extends BaseService<
 
     if (!category) {
       throw new NotFoundException(`Category with ID ${id} not found`);
-    }
-
-    if (updateCategoryDto.parentCategoryId !== undefined) {
-      category.parentCategory = updateCategoryDto.parentCategoryId
-        ? await this.categoryRepository.findOne({
-            where: { id: updateCategoryDto.parentCategoryId },
-          })
-        : null;
     }
 
     const updatedCategory = await this.categoryRepository.save(category);

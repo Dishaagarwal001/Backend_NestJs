@@ -24,7 +24,7 @@ export class Category {
     nullable: true,
     onDelete: 'SET NULL',
   })
-  @JoinColumn({ name: 'parent_category_id' })
+  @JoinColumn({ name: 'parent_category' })
   parentCategory: Category;
 
   @OneToMany(() => Category, (category) => category.parentCategory)
